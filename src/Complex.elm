@@ -29,32 +29,32 @@ module Complex exposing
 
 ## Type
 
-@doc Complex
+@docs Complex
 
 
 ## Build
 
-@doc complex, polar, real, imaginary
+@docs complex, polar, real, imaginary
 
 
 ## Special Values
 
-@doc nan, infinity, zero, unity
+@docs nan, infinity, zero, unity
 
 
 ## Checks
 
-@doc isInfinite, isNan
+@docs isInfinite, isNan
 
 
 ## Operations
 
-@doc add, subtract, multiply, divide, pow, exp, log, conjugate
+@docs add, subtract, multiply, divide, pow, exp, log, conjugate
 
 
 ## Conversions
 
-@doc toCartesian, toPolar, toString, fromString
+@docs toCartesian, toPolar, toString, fromString
 
 
 # Riemann Sphere
