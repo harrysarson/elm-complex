@@ -458,7 +458,7 @@ toString c =
 
 Strings must consist of
 
-  - a float possibly including a sign
+  - optionally: a float possibly including a sign
   - zero or one of
       - the character `'i'`.
       - a sign followed by the character `'i'`
@@ -478,47 +478,52 @@ fromString =
 
 complexParser : Parser Complex
 complexParser =
-    (Parser.succeed (*)
-        |= Parser.oneOf
-            [ Parser.succeed -1
-                |. Parser.symbol "-"
-            , Parser.succeed 1
-                |. Parser.symbol "+"
-            , Parser.succeed 1
-            ]
-        |= Parser.float
-        |. Parser.spaces
-    )
-        |> Parser.andThen
-            (\firstFloat ->
-                Parser.oneOf
-                    [ Parser.succeed (imaginary firstFloat)
-                        |. Parser.symbol "i"
-                    , Parser.succeed (complex firstFloat)
-                        |= Parser.backtrackable
-                            (Parser.oneOf
-                                [ Parser.symbol "-" |> Parser.map (always -1)
-                                , Parser.symbol "+" |> Parser.map (always 1)
-                                ]
-                            )
-                        |. Parser.symbol "i"
-                    , Parser.succeed (complex firstFloat)
-                        |= (Parser.succeed (*)
-                                |= Parser.oneOf
-                                    [ Parser.succeed -1
-                                        |. Parser.symbol "-"
-                                    , Parser.succeed 1
-                                        |. Parser.symbol "+"
+    Parser.oneOf
+        [ Parser.symbol "i" |> Parser.map (always <| imaginary 1)
+        , Parser.symbol "+i" |> Parser.map (always <| imaginary 1)
+        , Parser.symbol "-i" |> Parser.map (always <| imaginary -1)
+        , (Parser.succeed (*)
+            |= Parser.oneOf
+                [ Parser.succeed -1
+                    |. Parser.symbol "-"
+                , Parser.succeed 1
+                    |. Parser.symbol "+"
+                , Parser.succeed 1
+                ]
+            |= Parser.float
+            |. Parser.spaces
+          )
+            |> Parser.andThen
+                (\firstFloat ->
+                    Parser.oneOf
+                        [ Parser.succeed (imaginary firstFloat)
+                            |. Parser.symbol "i"
+                        , Parser.succeed (complex firstFloat)
+                            |= Parser.backtrackable
+                                (Parser.oneOf
+                                    [ Parser.symbol "-" |> Parser.map (always -1)
+                                    , Parser.symbol "+" |> Parser.map (always 1)
                                     ]
-                                |. Parser.spaces
-                                |= Parser.float
-                           )
-                        |. Parser.spaces
-                        |. Parser.symbol "i"
-                    , Parser.succeed (real firstFloat)
-                    ]
-                    |. Parser.end
-            )
+                                )
+                            |. Parser.symbol "i"
+                        , Parser.succeed (complex firstFloat)
+                            |= (Parser.succeed (*)
+                                    |= Parser.oneOf
+                                        [ Parser.succeed -1
+                                            |. Parser.symbol "-"
+                                        , Parser.succeed 1
+                                            |. Parser.symbol "+"
+                                        ]
+                                    |. Parser.spaces
+                                    |= Parser.float
+                               )
+                            |. Parser.spaces
+                            |. Parser.symbol "i"
+                        , Parser.succeed (real firstFloat)
+                        ]
+                        |. Parser.end
+                )
+        ]
 
 
 {-| Get real and imaginary parts of a complex number.

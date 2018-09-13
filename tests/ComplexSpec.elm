@@ -428,7 +428,12 @@ tests =
                                     Complex.fromString string
                                         |> equalJustComplex (Complex.complex re im)
                         )
-                        stringTests
+                        (stringTests
+                            ++ [ ( "+i", 0, 1 )
+                               , ( "+5", 5, 0 )
+                               , ( "+7.2e+3 + 123e+8 i", 7.2e3, 1.23e10 )
+                               ]
+                        )
                     )
                 , describe "whitespace"
                     [ test "parses allowed whitespace" <|
@@ -466,6 +471,10 @@ tests =
                     , test "two i's" <|
                         \() ->
                             Complex.fromString "-8i + 2 i"
+                                |> Expect.equal Nothing
+                    , test "just a +" <|
+                        \() ->
+                            Complex.fromString "+"
                                 |> Expect.equal Nothing
                     ]
                 ]
@@ -546,6 +555,8 @@ stringTests =
     , ( "-5.1-5.2e+42i", -5.1, -5.2e42 )
     , ( "-5+i", -5, 1 )
     , ( "5-i", 5, -1 )
+    , ( "i", 0, 1 )
+    , ( "-i", 0, -1 )
     ]
 
 
