@@ -1,0 +1,17 @@
+{
+  "name": "elm-complex",
+  "devDependencies": {
+    "elm": "^0.19.0-bugfix2",
+    "elm-format": "^0.8.0",
+    "elm-test": "^0.19.0-beta8",
+    "pre-commit": "^1.2.2"
+  },
+  "scripts": {
+    "test": "elm-test",
+    "lint": "elm-format src/ tests/ --validate"
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ]
+}
