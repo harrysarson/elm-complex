@@ -185,7 +185,7 @@ isInfinite c =
     isNan (complex 1 6) == False
 
 **Note:** you _could_ use `c == nan` to check for NaN values but it is
-not recommended as this behavour is different to that of floats (as \`0/0 /= 0/0).
+not recommended as this behavour is different to that of floats (as `0/0 /= 0/0`).
 
 -}
 isNan : Complex -> Bool
