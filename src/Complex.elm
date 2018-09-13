@@ -1,27 +1,10 @@
 module Complex exposing
     ( Complex
-    , add
-    , complex
-    , conjugate
-    , divide
-    , exp
-    , fromString
-    , imaginary
-    , infinity
-    , isInfinite
-    , isNan
-    , log
-    , multiply
-    , nan
-    , polar
-    , pow
-    , real
-    , subtract
-    , toCartesian
-    , toPolar
-    , toString
-    , unity
-    , zero
+    , complex, polar, real, imaginary
+    , nan, infinity, zero, unity
+    , isInfinite, isNan
+    , add, subtract, multiply, divide, pow, exp, log, conjugate
+    , toCartesian, toPolar, toString, fromString
     )
 
 {-| A library for complex calculations.
