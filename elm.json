@@ -3,7 +3,7 @@
     "name": "harrysarson/elm-complex",
     "summary": "Use complex numbers in elm.",
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "exposed-modules": [
         "Complex"
     ],
