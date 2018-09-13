@@ -60,7 +60,7 @@ Complex numbers are represented as a Union Type:
         | ComplexInfinity
 
 A complex number will either be finite (`Complex`), NaN or Infinite.
-It should be impossible to create a complex number which is finite but has NaN or Infinite components.
+It _should_ be impossible to create a complex number which is finite but has NaN or Infinite components.
 If you manage to create one please file an issue.
 
 -}
@@ -116,7 +116,9 @@ polar rho theta =
 
 
 {-| A complex "not a number" value.
-nan == divide (complex 0 0) (complex 0 0)
+
+    nan == divide (complex 0 0) (complex 0 0)
+
 -}
 nan : Complex
 nan =
@@ -125,7 +127,9 @@ nan =
 
 {-| Complex infinity.
 Infinity is 'very near' large complex numbers defined on the [Riemann sphere.](https://www.wikiwand.com/en/Riemann_sphere)
-infinity == divide (complex 1 0) (complex 0 0)
+
+    infinity == divide (complex 1 0) (complex 0 0)
+
 -}
 infinity : Complex
 infinity =
@@ -133,7 +137,9 @@ infinity =
 
 
 {-| Zero as a complex number.
-zero == complex 0 0
+
+    zero == complex 0 0
+
 -}
 zero : Complex
 zero =
@@ -141,7 +147,9 @@ zero =
 
 
 {-| One as a complex number.
-unity == complex 1 0
+
+    unity == complex 1 0
+
 -}
 unity : Complex
 unity =
@@ -160,7 +168,7 @@ unity =
 
     isInfinite (complex 1 6) == False
 
-_Note:_ you can also use `c == infinity` to test for infinity values.
+**Note:** you can also use `c == infinity` to test for infinity values.
 
 -}
 isInfinite : Complex -> Bool
@@ -176,7 +184,7 @@ isInfinite c =
 
     isNan (complex 1 6) == False
 
-_Note:_ you **could** use `c == nan` to check for NaN values but it is
+**Note:** you _could_ use `c == nan` to check for NaN values but it is
 not recommended as this behavour is different to that of floats (as \`0/0 /= 0/0).
 
 -}
@@ -457,7 +465,7 @@ Strings must consist of
       - a sign followed by another float followed by the character `'i'`.
 
 Whitespace is allowed anywhere between the real part and imaginary parts and between the imaginary
-part and the character i.
+part and the character `'i'`.
 
     fromString "4 + 6i" == Just (complex 4 6)
 
