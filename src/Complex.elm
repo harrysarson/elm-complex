@@ -359,7 +359,11 @@ pow base exponent =
 
             else
                 nan
-
+    else if base == zero then
+        if exponent == zero || isNan exponent || isInfinite exponent then
+            nan
+        else
+            zero
     else
         exp <| multiply exponent (log base)
 
