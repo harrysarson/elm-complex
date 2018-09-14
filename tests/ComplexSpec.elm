@@ -272,8 +272,45 @@ tests =
                 [ fuzz2 fuzzComplex fuzzComplex "finite ^ finite" <|
                     \a b ->
                         Complex.pow a b
+                            |> (if a == Complex.zero then
+                                    if b == Complex.zero then
+                                        Expect.equal Complex.nan
+                                    else
+                                        equalComplex (Complex.zero)
+                                else 
+                                    equalComplex
+                                        (Complex.exp <| Complex.multiply b (Complex.log a))
+                                )
+                , test "0 ^ 0" <|
+                    \() ->
+                        Complex.pow Complex.zero Complex.zero
+                            |> Expect.equal Complex.nan
+                , fuzz2 (Fuzz.floatRange 1.0e-30 1.0e30) Fuzz.float "(real and positive) ^ real" <|
+                    \a b ->
+                        Complex.pow (Complex.real a) (Complex.real b)
                             |> equalComplex
-                                (Complex.exp <| Complex.multiply b (Complex.log a))
+                                (Complex.real (a ^ b))
+                , fuzz2 (Fuzz.floatRange 1.0e-30 1.0e30) Fuzz.float "(real and negative) ^ real" <|
+                    \a b ->
+                        Complex.pow (Complex.real -a) (Complex.real b)
+                            |> equalComplex
+                                (Complex.polar (a ^ b) (pi * b))
+                , fuzz2 (Fuzz.floatRange 1.0e-30 1.0e30) Fuzz.float "(imaginary and positive) ^ real" <|
+                    \a b ->
+                        Complex.pow (Complex.imaginary a) (Complex.real b)
+                            |> equalComplex
+                                (Complex.polar 
+                                    (a ^ b) 
+                                    (pi / 2 * b)
+                                )
+                , fuzz2 (Fuzz.floatRange 1.0e-30 1.0e30) Fuzz.float "(imaginary and negative) ^ real" <|
+                    \a b ->
+                        Complex.pow (Complex.imaginary -a) (Complex.real b)
+                            |> equalComplex
+                                (Complex.polar 
+                                    (a ^ b) 
+                                    (-pi / 2 * b)
+                                )
                 , binaryOperatorNanTest Complex.pow
                 , fuzz fuzzComplex "finite ^ infinite" <|
                     \c ->
@@ -287,6 +324,10 @@ tests =
                     \x y ->
                         Complex.pow Complex.infinity (Complex.complex x y)
                             |> equalComplex (Complex.complex 0 0)
+                , test "infinity ^ infinity" <|
+                    \() ->
+                        Complex.pow Complex.infinity Complex.infinity
+                            |> Expect.equal Complex.nan
                 , test "infinity ^ 0" <|
                     \() ->
                         Complex.pow Complex.infinity (Complex.complex 0 0)
@@ -314,8 +355,7 @@ tests =
                 [ fuzz2 Fuzz.float Fuzz.float "log(finite)" <|
                     \a b ->
                         let
-                            { abs, arg } =
-                                Complex.complex a b |> Complex.toPolar
+                            (abs, arg) = (a, b) |> Basics.toPolar
                         in
                         Complex.complex a b
                             |> Complex.log
@@ -323,6 +363,15 @@ tests =
                                 (Complex.complex
                                     (Basics.logBase Basics.e abs)
                                     arg
+                                )
+                , fuzz Fuzz.float "log(real)" <|
+                    \x -> 
+                        Complex.real x
+                            |> Complex.log
+                            |> equalComplex 
+                                (Complex.complex
+                                    (logBase e <| abs x)
+                                    (if x >= 0 then 0 else pi)
                                 )
                 , test "log(infinite)" <|
                     \() ->
@@ -513,11 +562,15 @@ tests =
             , describe "toPolar" <|
                 [ fuzz2 Fuzz.float Fuzz.float "finite complex number" <|
                     \re im ->
+                        let
+                            ( expectedAbs, expectedArg ) =
+                                Basics.toPolar (re, im)
+                        in
                         Complex.complex re im
                             |> Complex.toPolar
                             |> Expect.all
-                                [ .abs >> Expect.within tolerance (sqrt <| re ^ 2 + im ^ 2)
-                                , .arg >> Expect.within tolerance (atan2 re im)
+                                [ .abs >> Expect.within tolerance expectedAbs
+                                , .arg >> Expect.within tolerance expectedArg
                                 ]
                 , test "infinite complex number" <|
                     \() ->
