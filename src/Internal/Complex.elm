@@ -43,7 +43,7 @@ toPolar c =
     case c of
         Complex { re, im } ->
             { abs = Basics.sqrt (re ^ 2 + im ^ 2)
-            , arg = Basics.atan2 re im
+            , arg = Basics.atan2 im re
             }
 
         ComplexNan ->

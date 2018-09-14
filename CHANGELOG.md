@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `Complex.pow` when base is zero.
+- argument given by `Complex.toPolar`.
 
 ## [1.0.4] - 2018-08-13
 
