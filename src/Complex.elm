@@ -511,6 +511,7 @@ complexParser =
                                     [ Parser.symbol "-" |> Parser.map (always -1)
                                     , Parser.symbol "+" |> Parser.map (always 1)
                                     ]
+                                    |. Parser.spaces
                                 )
                             |. Parser.symbol "i"
                         , Parser.succeed (complex firstFloat)

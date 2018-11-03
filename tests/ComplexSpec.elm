@@ -493,10 +493,18 @@ tests =
                         )
                     )
                 , describe "whitespace"
-                    [ test "parses allowed whitespace" <|
-                        \() ->
-                            Complex.fromString "-6 +   5 i"
-                                |> equalJustComplex (Complex.complex -6 5)
+                    [ describe "parses allowed whitespace"
+                        ([ ( "-6 +   5 i", -6, 5 )
+                         , ( "1 + i", 1, 1 )
+                         ]
+                            |> List.map
+                                (\( input, re, im ) ->
+                                    test input <|
+                                        \() ->
+                                            Complex.fromString input
+                                                |> equalJustComplex (Complex.complex re im)
+                                )
+                        )
                     , describe "errors on disallowed whitespace"
                         [ test "within a float" <|
                             \() ->
