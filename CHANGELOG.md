@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Complex.fromString` with space between operator and i (imaginary part of 1).
 
+### Added
+
+- `Complex.sqrt`.
+
 ### Tools
 
 - Upgrade elm-test to 0.19.0-beta11.
