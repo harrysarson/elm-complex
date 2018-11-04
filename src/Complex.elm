@@ -3,7 +3,7 @@ module Complex exposing
     , complex, polar, real, imaginary
     , nan, infinity, zero, unity
     , isInfinite, isNan
-    , add, subtract, multiply, divide, pow, exp, log, conjugate
+    , add, subtract, multiply, divide, pow, exp, log, sqrt, conjugate
     , toCartesian, toPolar, toString, fromString
     )
 
@@ -32,7 +32,7 @@ module Complex exposing
 
 ## Operations
 
-@docs add, subtract, multiply, divide, pow, exp, log, conjugate
+@docs add, subtract, multiply, divide, pow, exp, log, sqrt, conjugate
 
 
 ## Conversions
@@ -387,6 +387,54 @@ log z =
                 toPolar z
         in
         complex (Basics.logBase Basics.e abs) arg
+
+
+{-| Compute the principle square root of a complex number.
+
+    log (real -10) == complex 2.302585 pi -- allowing for floating point rounding errors.
+
+-}
+sqrt : Complex -> Complex
+sqrt z =
+    if isInfinite z then
+        infinity
+
+    else
+        -- based on https://github.com/infusion/Complex.js
+        let
+            { re, im } =
+                toCartesian z
+        in
+        if im == 0 then
+            if re >= 0 then
+                complex (Basics.sqrt re) 0
+
+            else
+                complex 0 (Basics.sqrt -re)
+
+        else
+            let
+                { abs } =
+                    toPolar z
+
+                ( newRe, newIm ) =
+                    if re >= 0 then
+                        ( 0.5 * Basics.sqrt (2.0 * (abs + re))
+                        , Basics.abs im / Basics.sqrt (2.0 * (abs + re))
+                        )
+
+                    else
+                        ( Basics.abs im / Basics.sqrt (2.0 * (abs - re))
+                        , 0.5 * Basics.sqrt (2.0 * (abs - re))
+                        )
+            in
+            complex newRe
+                (if im < 0 then
+                    -newIm
+
+                 else
+                    newIm
+                )
 
 
 {-| Compute the conjugate of a complex number

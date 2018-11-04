@@ -392,6 +392,43 @@ tests =
                             |> Complex.exp
                             |> Expect.equal Complex.nan
                 ]
+            , describe "sqrt"
+                [ fuzz fuzzPositive "sqrt(positive real)" <|
+                    \re ->
+                        Complex.real (re ^ 2)
+                            |> Complex.sqrt
+                            |> equalComplex (Complex.real re)
+                , fuzz fuzzPositive "sqrt(negative real)" <|
+                    \re ->
+                        Complex.real -(re ^ 2)
+                            |> Complex.sqrt
+                            |> equalComplex (Complex.imaginary re)
+                , fuzz fuzzPositive "sqrt(postive imaginary)" <|
+                    \a ->
+                        Complex.imaginary (a ^ 2)
+                            |> Complex.sqrt
+                            |> equalComplex (Complex.polar a (pi / 4))
+                , fuzz fuzzPositive "sqrt(negative imaginary)" <|
+                    \a ->
+                        Complex.imaginary -(a ^ 2)
+                            |> Complex.sqrt
+                            |> equalComplex (Complex.polar a (-pi / 4))
+                , fuzz2 fuzzPositive (Fuzz.floatRange -pi pi) "sqrt(complex)" <|
+                    \r phi ->
+                        Complex.polar r phi
+                            |> Complex.sqrt
+                            |> equalComplex (Complex.polar (sqrt r) (phi / 2))
+                , test "sqrt(infinite)" <|
+                    \() ->
+                        Complex.infinity
+                            |> Complex.sqrt
+                            |> Expect.equal Complex.infinity
+                , test "sqrt(nan)" <|
+                    \() ->
+                        Complex.nan
+                            |> Complex.sqrt
+                            |> Expect.equal Complex.nan
+                ]
             , describe "conjugate"
                 [ fuzz2 Fuzz.float Fuzz.float "conjugate(finite)" <|
                     \a b ->
@@ -639,6 +676,12 @@ fuzzMessyFloat =
         ]
 
 
+fuzzPositive : Fuzzer Float
+fuzzPositive =
+    Fuzz.float
+        |> Fuzz.map abs
+
+
 fuzzComplex : Fuzzer Complex
 fuzzComplex =
     Fuzz.map2 Complex.complex Fuzz.float Fuzz.float
@@ -675,6 +718,7 @@ equalComplex expected =
                     [ .re >> Expect.within tolerance rhs.re
                     , .im >> Expect.within tolerance rhs.im
                     ]
+                |> Expect.onFail ("expected " ++ Complex.toString expected ++ " ~= actual " ++ Complex.toString actual)
 
 
 equalJustComplex : Complex -> Maybe Complex -> Expectation
