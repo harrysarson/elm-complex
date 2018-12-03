@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tools
 
-- Upgrade elm-test to 0.19.0-beta11.
+- Use `language: elm` in Travis CI
 
 ## [1.0.5] - 2018-08-14
 
